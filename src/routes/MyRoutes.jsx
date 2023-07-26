@@ -27,7 +27,7 @@ const MyRoutes = () => {
         <Route path="/product/:model" element={<DetailPage />} />
         <Route path="/shopping" element={<Shopping />} />
         <Route path="/shopping/checkout" element={<Checkout />} />
-        <Route path="/newwatch" element={<FormWatch />} />
+        <Route path="/admin/newwatch" element={<FormWatch />} />
       </Routes>
       {showFoot && <Footer />}
     </>
