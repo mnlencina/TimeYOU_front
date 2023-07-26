@@ -81,7 +81,7 @@ export const Navbar = () => {
                 <FiShoppingCart />
               </Link>
             </li>
-            <Link to="/admin/newwatch">.</Link>            
+            <Link to="/admin/newwatch"><span>.</span></Link>            
           </ul>
         </div>
       </nav>
