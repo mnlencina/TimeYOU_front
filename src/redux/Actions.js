@@ -43,8 +43,8 @@ export const getProducts = () => async (dispatch) => {
   }
 };
 //fetch de un producto segun su modelo
-export function addModel (model) {
-  const endpoint = `https://timeyouback.up.railway.app/watches/${model}`;
+export function addModel (id) {
+  const endpoint = `https://timeyouback.up.railway.app/watches/${id}`;
   return async function (dispatch) {
     try {
       let { data } = await axios(endpoint);

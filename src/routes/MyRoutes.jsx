@@ -24,10 +24,10 @@ const MyRoutes = () => {
         <Route path="/auth" element={<RegisterAndLogin/>}/>
         <Route path="/" element={<LandingPage/>}/>
         <Route path="/home" element={<HomePage />} />
-        <Route path="/product/:model" element={<DetailPage />} />
+        <Route path="/product/:id" element={<DetailPage />} />
         <Route path="/shopping" element={<Shopping />} />
         <Route path="/shopping/checkout" element={<Checkout />} />
-        <Route path="/admin/newwatch" element={<FormWatch />} />
+        <Route path="/newwatch" element={<FormWatch />} />
       </Routes>
       {showFoot && <Footer />}
     </>
