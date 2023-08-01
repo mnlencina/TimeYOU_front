@@ -90,7 +90,7 @@ function RegisterAndLogin() {
   
   const handleOnClick = async () => {
     // Redireccionar al usuario a la página de inicio de sesión de Google
-    window.location.href = "https://timeyouback.up.railway.app/auth/google"; // Reemplaza esta URL con la ruta adecuada de tu servidor para la autenticación de Google
+    window.location.href = "https://timeyou.vercel.app/auth/google"; // Reemplaza esta URL con la ruta adecuada de tu servidor para la autenticación de Google
   };
 
   const renderRegister = () => (
