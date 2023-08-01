@@ -5,37 +5,39 @@ import { FiShoppingCart } from "react-icons/fi";
 import { BTNCarritoDeCompras } from "../utils/ComponentsStyle";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { addModel } from "../redux/Actions";
+import { addModel, resetDetail } from "../redux/Actions";
 import { addToCart } from "../redux/Actions";
+import { translateGender } from "../components/helpers/translateGenderWords"
+import CommentsList from "../components/comments/CommentsList";
+import AverageRating from "../components/comments/AverageRating";
 
-function DetailPage() {
+
+function DetailPage () {
   const [color, setColor] = useState(0);
   const [color2, setColor2] = useState(0);
   const dispatch = useDispatch();
   const { id } = useParams();
   const detailClock = useSelector((state) => state.detailClock);
   const loading = useSelector((state) => state.detailLoading);
- 
-
-  
 
   const handleAddToCart = () => {
-   
     dispatch(addToCart(detailClock[color]));
   };
 
+  const backPag = () => {
+    dispatch(resetDetail())
+  }
+
   useEffect(() => {
-  console.log(id);
+    console.log(id);
     dispatch(addModel(id));
+    return backPag()
   }, [dispatch]);
 
   return loading ? (
     <div>loanding</div>
   ) : (
     <Container>
-     
-     
-     
       <div className="main_container">
         <header className="title">
           <h3>
@@ -46,11 +48,11 @@ function DetailPage() {
           </h3>
         </header>
         <section className="show-clocks">
-        <div className="navVert">
- {(detailClock[color].image).map((img, i)=>
-   <img onClick={()=> setColor2(i)} key={i+50} src={img} alt="imgB" />
- )}
- </div>
+          <div className="navVert">
+            {(detailClock[color].image).map((img, i) =>
+              <img onClick={() => setColor2(i)} key={i + 50} src={img} alt="imgB" />
+            )}
+          </div>
           <picture className="img-box">
             <img src={detailClock[color].image[color2]} alt="imgD" />
           </picture>
@@ -60,9 +62,8 @@ function DetailPage() {
                 <h3>{`${detailClock[0].model} - ${detailClock[
                   color
                 ].colorName.toUpperCase()}`}</h3>
-                <h1>{`${detailClock[0].brandName.toUpperCase()} | ${
-                  detailClock[0].model
-                }`}</h1>
+                <h1>{`${detailClock[0].brandName.toUpperCase()} | ${detailClock[0].model
+                  }`}</h1>
               </header>
               <hr />
               <div className="price">
@@ -71,17 +72,17 @@ function DetailPage() {
                   <h3>Colores:</h3>
                   <div className="color">
                     {detailClock.map((wat, i) => (
-                      <img 
-                        src={wat.image[0]} alt="" 
-                        onClick={() => {setColor(i); setColor2(0)}}
-                        key={i + wat.colorName}                                              
+                      <img
+                        src={wat.image[0]} alt=""
+                        onClick={() => { setColor(i); setColor2(0) }}
+                        key={i + wat.colorName}
                       />
                     ))}
                   </div>
                 </div>
               </div>
               <div className="btn-cart">
-                <BTNCarritoDeCompras onClick={handleAddToCart}>
+                <BTNCarritoDeCompras onClick={handleAddToCart} alter="false">
                   <span>
                     <FiShoppingCart />
                   </span>
@@ -115,7 +116,7 @@ function DetailPage() {
                 <div className="gender">
                   <h3>genero</h3>
                   <ul>
-                    <li>{detailClock[0].gender}</li>
+                      <li>{translateGender(detailClock[0].gender)}</li>
                   </ul>
                 </div>
               </div>
@@ -131,7 +132,11 @@ function DetailPage() {
           </article>
         </section>
         <hr />
-        <section className="reviews"></section>
+        <div className="login">Califica tu compra</div>
+        <div className="container-reviews">
+          <section className="reviews"><CommentsList /></section>
+          <section className="ratings"><AverageRating /></section>
+        </div>
       </div>
     </Container>
   );
@@ -249,7 +254,7 @@ const Container = styled.main`
           }
           .price {
             width: 90%;
-            height: 180px;
+            height: 190px;
             display: flex;
             flex-direction: column;
             justify-content: space-around;
@@ -271,7 +276,7 @@ const Container = styled.main`
               }
               .color {
                 width: 100%;
-                height: 50px;
+                height: 100px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -314,9 +319,11 @@ const Container = styled.main`
             justify-content: center;
           }
           .detail-compra {
-            width: 90%;
-            height: calc(500px - 280px);
-            margin-top: 10px;
+            width: 95%;
+            height: 180px;
+            margin-top: 8px;
+            margin-bottom: 8px;         
+            
           }
         }
       }
@@ -424,11 +431,29 @@ const Container = styled.main`
         }
       }
     }
-    .reviews {
-      width: 100%;
-      height: 400px;
-      margin-bottom: 20px;
-      background-color: red;
+   
+  } .login {
+    width: 90%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-end;
+  } 
+  .container-reviews {
+     margin: 0 auto;
+     width: 90%;
+     min-height: auto;
+     display: flex;
+     justify-content: space-between;
     }
-  }
+    .reviews {
+      width: 60%;
+      min-height: auto;
+      margin-bottom: 20px; 
+      padding-right: 20px;
+    }
+    .ratings {
+      width: 40%;
+      min-height: auto;
+      margin-bottom: 20px;
+    }
 `;

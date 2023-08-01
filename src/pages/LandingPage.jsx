@@ -6,13 +6,18 @@ import {
   BannerSlider,
   Pagination,
   CardSlider,
+  LogoSlider
 } from "../components/index.js";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { getProducts, getWatchesByBrand } from "../redux/Actions.js";
 
 export default function LandingPage() {
 
-    const { Clocks, searchClocks, searchActive } = useSelector((state) => state);
+  const Clocks = useSelector((state) => state.Clocks);
+  const searchClocks = useSelector((state) => state.searchClocks);
+  const searchActive = useSelector((state) => state.searchActive);
+  
   const whatches = searchActive ? searchClocks : Clocks;
 
   const [show, setShow] = useState(false);
@@ -30,6 +35,12 @@ export default function LandingPage() {
   };
 
   const PaginacionRelojes = paginacion();
+
+  const dispatch = useDispatch();
+  const handleLinkClick = async (brand) => {
+    const brandLowerCase = brand.toLowerCase();
+      await dispatch(getWatchesByBrand(brandLowerCase));
+  };
 
 //   const onNextPage = () => {
 //     if (page < totalPages) {
@@ -51,36 +62,51 @@ export default function LandingPage() {
     </ContainerSlide>
   );
 
-  const renderMostrador = () => (
-    <ContainerMostrador show={show.toString()}>
-      <div className="sidebar">
-        <div className="btn-filter">
-          <button onClick={() => setShow(!show)}>filtros</button>
-        </div>
-        <Drawer show={show} />
-      </div>
-      <section className="main-card">
-        <CardContext pagination={PaginacionRelojes} />
-      </section>
-    </ContainerMostrador>
-  );
+//   const renderMostrador = () => (
+//     <ContainerMostrador show={show.toString()}>
+//       <div className="sidebar">
+//         <div className="btn-filter">
+//           <button onClick={() => setShow(!show)}>filtros</button>
+//         </div>
+//         <Drawer show={show} />
+//       </div>
+//       <section className="main-card">
+//         <CardContext pagination={PaginacionRelojes} />
+//       </section>
+//     </ContainerMostrador>
+//   );
+
+  const banner = () => (
+    <Banners>
+        <Link to={'/home'} onClick={() => handleLinkClick('casio')}>
+      <img src="https://watchlandsa.vtexassets.com/assets/vtex.file-manager-graphql/images/d5ddcaed-1cec-4736-8a94-0e03b3ba26f8___89f5b3ced11506895642fca1c4f6d59a.png" className="foto"  />
+        </Link>
+        <Link to={'/home'} onClick={() => handleLinkClick('mistral')}>
+      <img src="https://watchlandsa.vtexassets.com/assets/vtex.file-manager-graphql/images/74b39cc8-7942-4a5d-86cf-4d03f19ee51c___7d3dd5a98962f95ef4e34c14f54a1ee8.png" className="foto" />
+        </Link>
+    </Banners>
+  )
 
 
   return (
     <>
       {slideContainer()}
-       {/* <Link to={'/home'}>
-        <button className="Explore">
-            Explore
-        </button>
-       </Link> */}
-      <CardSlider />
+      <LogoSlider/>
+      <CardSlider/>
+      {banner()}
+      <CardSlider/>
     </>
   );
 }
 
-const Explore = styled.section`
-
+const Banners = styled.section`
+    width: 100%;
+    height: 100%;
+    margin-left: 100px;
+    .foto {
+        margin-top: 50px;
+        width:90%;
+    }
 `;
 
 const ContainerSlide = styled.section`
