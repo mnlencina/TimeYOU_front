@@ -2,7 +2,7 @@ import axios from "axios";
 import { ALL_BUY } from "../../actionTypes";
 
 export function addBuys () {
-    const endpoint = `http://timeyouback.up.railway.app/admin/allBuy`;
+    const endpoint = `https://timeyouback.up.railway.app/admin/allBuy`;
     return async function (dispatch) {
       try {
         let { data } = await axios(endpoint);

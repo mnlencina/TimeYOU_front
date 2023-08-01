@@ -31,7 +31,7 @@ import { BsDisplayport } from "react-icons/bs";
 //fetch de productos
 
 export const getProducts = () => async (dispatch) => {
-  const URL = "http://timeyouback.up.railway.app/watches";
+  const URL = "https://timeyouback.up.railway.app/watches";
   try {
     const response = await fetch(URL);
     const data = await response.json();
@@ -45,7 +45,7 @@ export const getProducts = () => async (dispatch) => {
 };
 //fetch de un producto segun su modelo
 export function addModel(id) {
-  const endpoint = `http://timeyouback.up.railway.app/watches/${id}`;
+  const endpoint = `https://timeyouback.up.railway.app/watches/${id}`;
   return async function (dispatch) {
     try {
       let { data } = await axios(endpoint);
@@ -168,7 +168,7 @@ export const clearFilters = () => (dispatch) => {
 //TRAER TODOS LAS PROPIEDADES DE RELOJES
 
 export function allPropWatches(prop) {
-  const endpoint = `http://timeyouback.up.railway.app/${prop}`;
+  const endpoint = `https://timeyouback.up.railway.app/${prop}`;
   return async function (dispatch) {
     try {
       let { data } = await axios(endpoint);
@@ -204,7 +204,7 @@ export function allPropWatches(prop) {
 }
 
 export function postWatch(watch) {
-  const endpoint = `http://timeyouback.up.railway.app/watches/`;
+  const endpoint = `https://timeyouback.up.railway.app/watches/`;
   return async function (dispatch) {
     try {
       let newWatch = await axios.post(endpoint, watch);
@@ -224,7 +224,7 @@ export function postWatch(watch) {
 //funcion de registro
 
 export const createUser = (user) => async (dispatch) => {
-  const endpoint = "http://timeyouback.up.railway.app/users/register";
+  const endpoint = "https://timeyouback.up.railway.app/users/register";
   try {
     const newUser = await axios.post(endpoint, user);
     
@@ -239,7 +239,7 @@ export const createUser = (user) => async (dispatch) => {
 };
 
 export const loginUser = (user) => async (dispatch) => {
-  const endpoint = "http://timeyouback.up.railway.app/users/login";
+  const endpoint = "https://timeyouback.up.railway.app/users/login";
   try {
     const { data } = await axios.post(endpoint, user, {
       headers: { "Content-Type": "application/json" },
@@ -260,7 +260,7 @@ export const loginGoogle = (user) => ({
 
 // Peticiones para cada una de las Brand en el Navbar //
 export const getWatchesByBrand = (brand) => async (dispatch) => {
-  const URL = `http://timeyouback.up.railway.app/brands/${brand}`;
+  const URL = `https://timeyouback.up.railway.app/brands/${brand}`;
   try {
     let { data } = await axios.get(URL);
     console.log("data.Watches", data.Watches);
