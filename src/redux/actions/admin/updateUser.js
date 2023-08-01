@@ -2,7 +2,7 @@ import axios from "axios";
 import { UPDATE_USER } from "../../actionTypes";
 
 export function updateUser(id,upUser) {
-    const endpoint = `https://timeyouback.up.railway.app/updateUser/${id}`;
+    const endpoint = `http://timeyouback.up.railway.app/admin/updateUser/${id}`;
     return async function (dispatch) {
       try {
         let update = await axios.put(endpoint, upUser);
