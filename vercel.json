@@ -1,6 +1,6 @@
 {
     "rewrites": [
-      { "source": "/auth/local", "destination": "/auth/local" },
-      { "source": "/(.*)", "destination": "/redirect", "statusCode": 307 }
+      { "source": "/auth", "destination": "/auth" },
+     
     ]
   }
