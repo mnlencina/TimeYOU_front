@@ -1,6 +1,6 @@
 {
     "rewrites": [
-      { "source": "/auth", "destination": "/auth" },
+      { "source": "/auth", "destination": "/auth" }
      
     ]
   }
