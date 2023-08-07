@@ -10,8 +10,8 @@ import {
 import { useSelector } from "react-redux";
 
 export default function HomePage() {
-  const { Clocks, searchClocks, searchActive } = useSelector((state) => state);
-  const whatches = searchActive ? searchClocks : Clocks;
+  const { Clocks, allClocks, searchActive } = useSelector((state) => state);
+  const whatches = searchActive ?  Clocks : allClocks;
 
   const [show, setShow] = useState(false);
   const showOpen = show.toString();
@@ -55,7 +55,7 @@ export default function HomePage() {
         <div className="btn-filter">
           <button onClick={() => setShow(!show)}>filtros</button>
         </div>
-        <Drawer show={show} />
+        <Drawer show={show} setPage={setPage} />
       </div>
       <section className="main-card">
         <CardContext pagination={PaginacionRelojes} />

@@ -9,6 +9,8 @@ import {
   SEARCH_PRODUCT_SUCCESS,
   SEARCH_PRODUCT_FAILURE,
   FILTERS,
+  UPDATE_SELECTED_CATEGORIES,
+  CLEAR_FILTERS,
   TOTAL_PRICE,
   UPDATE_PRICE,
   ALL_BRANDS,
@@ -26,11 +28,19 @@ import {
   ALL_BUY,
   UPDATE_USER,
   UPDATE_WATCH,
+  GET_COMMENTS_SUCCESS,
+  GET_COMMENTS_ERROR,
+  CREATE_COMMENT_SUCCESS,
+  CREATE_COMMENT_FAILURE,
+  GET_USER_LOGGED,
+  SET_CART,
+  UPDATE_CART,
 } from "./actionTypes";
 
 // Obtenemos el carrito almacenado en el localStorage (si existe)
-const storedCart = localStorage.getItem("cart");
+
 const userStored = localStorage.getItem("user");
+const userData = userStored ? JSON.parse(userStored) : false;
 
 const initialState = {
   Clocks: [],
@@ -38,7 +48,9 @@ const initialState = {
   searchClocks: [],
   searchActive: false,
   filteredClocks: [],
-  Cart: storedCart ? JSON.parse(storedCart) : { items: [] },
+  selectedCategories: "",
+  Cart: [],
+  isLoadingCart: true,
   price: 500,
   detailClock: [],
   isLoading: true,
@@ -50,18 +62,25 @@ const initialState = {
   FUNCTIONS: [],
   user: userStored ? JSON.parse(userStored) : { role: "", token: "" },
   allUsers: [],
-  allBuys: []
+  allBuys: [],
+  comments: [],
+  errorComments: null,
+  userLoggedId: [],
 };
 
 // Función para guardar el carrito en el localStorage
-const saveCartToLocalStorage = (cart) => {
-  localStorage.setItem("cart", JSON.stringify(cart));
+const saveCartToLocalStorage = (sessionData, userName) => {
+  localStorage.setItem(userName, JSON.stringify(sessionData));
 };
 const saveUserToLocalStorage = (user) => {
   localStorage.setItem("user", JSON.stringify(user));
 };
 
 export const rootReducer = (state = initialState, { type, payload }) => {
+  const userStored = localStorage.getItem("user");
+  const userData = userStored ? JSON.parse(userStored) : false;
+  const userName = userData ? userData.userName : null;
+
   switch (type) {
     case GET_PRODUCTS:
       return {
@@ -87,7 +106,7 @@ export const rootReducer = (state = initialState, { type, payload }) => {
     case SEARCH_PRODUCT_SUCCESS:
       return {
         ...state,
-        searchClocks: payload,
+        Clocks: payload,
         isLoading: false,
         searchActive: payload.length > 0,
         error: null,
@@ -98,30 +117,46 @@ export const rootReducer = (state = initialState, { type, payload }) => {
         isLoading: false,
         error: payload,
       };
-    case ADD_TO_CART:
-      // eslint-disable-next-line no-case-declarations
-      const updatedCart = [...state.Cart.items, payload];
-      saveCartToLocalStorage({ items: updatedCart });
+    /* Cambio realizado */
+    case SET_CART:
       return {
         ...state,
-        Cart: { items: updatedCart },
+        Cart: payload,
+        isLoadingCart: false,
       };
+    case ADD_TO_CART:
+      const existingItem = state.Cart.find((item) => item.id === payload.id);
+      if (existingItem) {
+        return state;
+      } else {
+        const updatedCart = [...state.Cart, payload];
+        saveCartToLocalStorage(updatedCart, state.user.userName);
+        return {
+          ...state,
+          Cart: updatedCart,
+        };
+      }
     case REMOVE_FROM_CART:
-      // eslint-disable-next-line no-case-declarations
-      const filteredCart = state.Cart.items.filter(
-        (item) => item.id !== payload
-      ); // Aquí accedemos al array 'items'
-      saveCartToLocalStorage({ items: filteredCart });
+      const filteredCart = state.Cart.filter((item) => item.id !== payload);
+      saveCartToLocalStorage(filteredCart, userName);
       return {
         ...state,
-        Cart: { items: filteredCart },
+        Cart: filteredCart,
       };
     case CLEAR_CART:
-      localStorage.removeItem("cart");
       return {
         ...state,
-        Cart: { items: [] },
+        Cart: [],
       };
+    case UPDATE_CART: {
+      localStorage.removeItem(userName);
+      return {
+        ...state,
+        Cart: [],
+      };
+    }
+
+    /* --------- */
     case TOTAL_PRICE:
       return {
         ...state,
@@ -167,11 +202,20 @@ export const rootReducer = (state = initialState, { type, payload }) => {
 
       return {
         ...state,
-        searchClocks: filterBrands,
+        Clocks: filterBrands,
         isLoading: false,
         error: null,
-        searchActive: filterActive,
-        filteredClocks: filteredClocks,
+        searchActive: true,
+      };
+      case CLEAR_FILTERS:
+      return {
+        ...state,
+        selectedCategories: "", 
+      };
+      case UPDATE_SELECTED_CATEGORIES:
+      return {
+        ...state,
+        selectedCategories:payload,
       };
     case ALL_BRANDS:
       return {
@@ -208,13 +252,13 @@ export const rootReducer = (state = initialState, { type, payload }) => {
       };
     case LOGIN_USER:
       saveUserToLocalStorage(payload);
+
       return {
         ...state,
         user: payload,
       };
-    //lINKS DEL NAVBAR
     case LOGIN_GOOGLE:
-      saveUserToLocalStorage(payload)
+      saveUserToLocalStorage(payload);
       return {
         ...state,
         user: payload,
@@ -222,16 +266,17 @@ export const rootReducer = (state = initialState, { type, payload }) => {
     case GET_WATCHES_BY_BRAND:
       return {
         ...state,
-        searchClocks: payload,
+        Clocks: payload,
+        searchActive: true,
         isLoading: false,
-        searchActive: payload.length > 0,
         error: null,
       };
     case LOGOUT_USER:
       localStorage.removeItem("user");
       return {
         ...state,
-        user: {role:"", token:""},
+        user: { role: "", token: "" },
+        Cart: [],
       };
     case ALL_USERS:
       return {
@@ -241,16 +286,45 @@ export const rootReducer = (state = initialState, { type, payload }) => {
     case ALL_BUY:
       return {
         ...state,
-        allBuys: payload
+        allBuys: payload,
       };
     case UPDATE_USER:
       return {
-        ...state
-      }
+        ...state,
+      };
     case UPDATE_WATCH:
       return {
-        ...state
-      }
+        ...state,
+      };
+    case GET_COMMENTS_SUCCESS:
+      return {
+        ...state,
+        comments: payload,
+        errorComments: null,
+      };
+    case GET_COMMENTS_ERROR:
+      return {
+        ...state,
+        comments: [],
+        errorComments: payload,
+      };
+    case CREATE_COMMENT_SUCCESS:
+      return {
+        ...state,
+        comments: [...state.comments, payload],
+        errorComments: null,
+      };
+    case CREATE_COMMENT_FAILURE:
+      return {
+        ...state,
+        errorComments: payload,
+      };
+    case GET_USER_LOGGED:
+      return {
+        ...state,
+        userLoggedId: payload,
+        error: null,
+      };
     default:
       return state;
   }

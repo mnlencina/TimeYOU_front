@@ -1,19 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { getCommentsByWatchId } from '../../redux/actions/comments/getCommentsByWatchId'
 import styled from 'styled-components';
 import CommentItem from './CommentItem';
 import { FaEllipsisH } from 'react-icons/fa';
 
 const CommentListContainer = styled.div`
-  max-width: 900px;
+  max-width: 800px;
   margin: 2px auto;
   padding: 2px auto;
    min-height: auto;
-   margin-bottom: 50px; 
+   margin-bottom: 80px; 
 `;
 
 const Title = styled.h2`
   text-align: left;
-  margin-bottom: 20px;
+  margin-bottom: 50px;
 `;
 
 const ShowMoreButton = styled.button`
@@ -35,28 +37,26 @@ const FaEllipsisHWrapper = styled.div`
 
 
 
-const CommentsList = () => {
-  const comments = [
-    { id: 1, calification: 3, comment: 'Bueno, pero podría mejorar. Bueno, pero podría mejorar.', userId: 10, userName: 'Juan' },
-    { id: 2, calification: 4, comment: 'Bueno.', userId: 11, userName: 'Lucia' },
-    { id: 3, calification: 4, comment: 'Bueno, pero podría mejorar.Bueno, pero podría mejorar.Bueno, pero podría mejorar.Bueno, pero podría mejorar.', userId: 12, userName: 'Gabriela' },
-    { id: 4, calification: 2, comment: 'No me gustó.', userId: 13, userName: 'Pepe' },
-    { id: 5, calification: 5, comment: '¡Gran producto!', userId: 14, userName: 'Maria' },
-    { id: 6, calification: 4, comment: 'Bueno, pero podría mejorar.', userId: 12, userName: 'Gabriela' },
-    { id: 7, calification: 2, comment: 'No me gustó.', userId: 15, userName: 'Pepe' },
-    { id: 8, calification: 5, comment: '¡Gran producto!', userId: 16, userName: 'Maria' },
-    { id: 6, calification: 4, comment: 'Bueno, pero podría mejorar.', userId: 12, userName: 'Gabriela' },
-    { id: 7, calification: 2, comment: 'No me gustó.', userId: 15, userName: 'Pepe' },
-    { id: 8, calification: 5, comment: '¡Gran producto!', userId: 16, userName: 'Maria' },
-    { id: 6, calification: 4, comment: 'Bueno, pero podría mejorar.', userId: 12, userName: 'Gabriela' },
-    { id: 7, calification: 2, comment: 'No me gustó.', userId: 15, userName: 'Pepe' },
-    { id: 8, calification: 5, comment: '¡Gran producto!', userId: 16, userName: 'Maria' }
-  ];
+const CommentsList = ({watchId}) => {
+  
+  console.log("WATCHID",  watchId)
+  const comments = useSelector((state) => state.comments) || []; 
+  console.log("COMMENTS DEL COMMENTLIST", comments)
+
+  
+  const error = useSelector((state) => state.errorComments);
+  const dispatch = useDispatch();
 
   const [visibleComments, setVisibleComments] = useState(3);
   const [showAllComments, setShowAllComments] = useState(false);
 
   const allCommentsShown = visibleComments >= comments.length;
+
+
+  useEffect(() => {
+    dispatch(getCommentsByWatchId(watchId));
+  }, [dispatch, watchId]);
+  
 
   const handleShowMore = () => {
     setVisibleComments((prevVisibleComments) => prevVisibleComments + 5);
@@ -70,12 +70,13 @@ const CommentsList = () => {
   return (
     <CommentListContainer>
       <Title>Comentarios</Title>
-      {comments.slice(0, visibleComments).map((comment) => (
+      {comments.length == 0 && <div>Todavía no existen calificaciones para este producto... </div>}
+      {comments.length > 0 && comments.slice(0, visibleComments).map((comment) => (
         <>
           <CommentItem
             key={comment.id}
             calification={comment.calification}
-            comment={comment.comment}
+            comment={comment.commentText}
             userName={comment.userName}
             onToggleExpand={handleShowMore}
           />
