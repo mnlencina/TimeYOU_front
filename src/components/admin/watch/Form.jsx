@@ -27,7 +27,8 @@ function FormWatch({btnClose}) {
     price: 0,
     gender: "", 
     functions: [],
-    description: ""
+    description: "",
+    stock:""
   })
   
   
@@ -176,6 +177,11 @@ function FormWatch({btnClose}) {
         </div>
         
         <div className="optionDiv">
+          <h3>Cantidad:</h3>
+          <input name="stock" type="text" defaultValue={watch.stock} onChange={handleChange}/>     
+        </div>
+        
+        <div className="optionDiv">
           <h3>Precio en usd:</h3>
           <input name="price" type="text" onChange={handleChange}/>     
         </div>        
@@ -189,7 +195,7 @@ function FormWatch({btnClose}) {
         
         </div>
         
-          <button className="btnUp" type="button" onClick={postWatches}>UP WATCH</button>
+          <button className="btnUp" type="button" onClick={postWatches}>CARGAR</button>
           </Container1>
         <div className="funcionesDiv">
           <h3>Funciones:</h3>
@@ -219,7 +225,7 @@ function FormWatch({btnClose}) {
         </div>
         
       </Formulario>
-      <button className="btnClose" onClick={btnClose}>Close</button>
+      <button className="btnClose" onClick={btnClose}>Cerrar</button>
     </Container>  
     )
   }

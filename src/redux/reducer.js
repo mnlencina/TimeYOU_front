@@ -35,6 +35,7 @@ import {
   GET_USER_LOGGED,
   SET_CART,
   UPDATE_CART,
+  UPDATE_USERNAME,
 } from "./actionTypes";
 
 // Obtenemos el carrito almacenado en el localStorage (si existe)
@@ -108,7 +109,7 @@ export const rootReducer = (state = initialState, { type, payload }) => {
         ...state,
         Clocks: payload,
         isLoading: false,
-        searchActive: payload.length > 0,
+        searchActive: true,
         error: null,
       };
     case SEARCH_PRODUCT_FAILURE:
@@ -210,12 +211,12 @@ export const rootReducer = (state = initialState, { type, payload }) => {
       case CLEAR_FILTERS:
       return {
         ...state,
-        selectedCategories: "", 
+        selectedCategories: payload, 
       };
       case UPDATE_SELECTED_CATEGORIES:
       return {
         ...state,
-        selectedCategories:payload,
+        selectedCategories: payload + " ",
       };
     case ALL_BRANDS:
       return {
@@ -324,6 +325,14 @@ export const rootReducer = (state = initialState, { type, payload }) => {
         ...state,
         userLoggedId: payload,
         error: null,
+      };
+    case UPDATE_USERNAME:
+      return{
+        ...state,
+        user:{
+          ...state.user,
+          userName: payload
+        }
       };
     default:
       return state;

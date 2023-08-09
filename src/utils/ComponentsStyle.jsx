@@ -38,6 +38,7 @@ export const BTNHover = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: all;
   cursor: pointer;
   &:hover {
     color: ${(props) => props.alter === "true" && "#fff"};
@@ -84,4 +85,12 @@ export const BTNLogin = styled.button`
     background-color: #35838a;
     transform: scale(1.2);
   }
+`;
+
+export const ContainerLoader = styled.div`
+  width: 100%;
+  height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;

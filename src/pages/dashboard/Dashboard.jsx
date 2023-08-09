@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {Container} from "./style"
 import Sidebar from "../../components/admin/sidebar/Sidebar";
 import Form from "../../components/admin/watch/Form";
+import FormUser from "../../components/admin/users/Form";
 import Buys from "../../components/admin/buys/Buys";
 import Nav from "../../components/admin/nav/Nav";
 import { addUsers } from "../../redux/actions/admin/addUsers";
@@ -16,16 +17,15 @@ import DataTable from "react-data-table-component"
 import { BiTrash,BiDislike } from "react-icons/bi"
 import {FaUser,FaUserTie,FaEdit} from "react-icons/fa"
 import { TbDeviceWatchOff, TbDeviceWatchStats, TbDeviceWatchUp } from "react-icons/tb";
+import HomeAdmin from "../../components/admin/nav/HomeAdmin";
 
-
-
-//import styled from "styled-components";
 
 const Dashboard = ()=>{
     const allUsers = useSelector((state)=> state.allUsers)
-    let allClocks = useSelector((state)=> state.allClocks)
-    //const allBuys = useSelector((state)=> state.allBuys)
-
+    const allClocks = useSelector((state)=> state.allClocks)
+    const allBuys = useSelector((state)=> state.allBuys)
+    
+    const [newUser, setNewUser] = useState(false)
     const [newWat, setNewWat] = useState(false)
     const [updateW, setUpdateW] = useState(false)
     const [editRole, setEditRole] = useState(false)
@@ -55,13 +55,14 @@ const Dashboard = ()=>{
         let data = await dispatch(updateUser(id,del))
         console.log(data);
         dispatch(addUsers())
-        
+        setSearchUser(false)
     }
     
     const delWatch = async(id,del)=>{
         let data = await dispatch(updateWatch(id,del))
         console.log(data);
         dispatch(getProducts())
+        setSearchClock(false)
         
     }
     
@@ -71,13 +72,23 @@ const Dashboard = ()=>{
         console.log(data);
         setEditRole(false)        
         dispatch(addUsers())
-        
+        setSearchUser(false)
     }
     
     const editWatches =(row)=>{
         setWUpdate(row)
         setUpdateW(true)
+        setSearchClock(false)
         
+    }
+    
+    const handleFilterWatch = (e)=>{
+        const {value} = e.target
+        const filtered = allClocks.filter(row=>{
+            const modelo = row.model.toLowerCase()
+            return modelo.includes(value.toLowerCase())        
+        })
+        setSearchClock(filtered)
     }
     
     const handleFilterUser = (e)=>{
@@ -88,6 +99,42 @@ const Dashboard = ()=>{
         })
         setSearchUser(filtered)
     }
+    
+    
+    const dataExpan = ({data})=> {
+        console.log(data);
+        return (
+            <div className="dataExpan">
+            <span>Descripción: {data.description} </span><span>Funciones: {data.Functions.map(s=>`  •${s.name.charAt(0).toUpperCase() + s.name.slice(1)}  `)}</span>
+        </div>
+    )
+};
+
+
+
+const custonStyled = {
+    rows: {
+        style:{
+            color: "black",
+            backgroundColor: "rgb(255,255,255,0.7)",
+            
+        }
+    },
+    headCells: {
+        style:{
+                color: "white",
+                backgroundColor: "rgb(0,0,0,0.8)",
+            }
+        },
+        /* table:{
+            style:{
+                backgroundColor: ""
+            }
+        }, */
+        
+    }
+    
+    
     
     const columnsUser = [
         {
@@ -100,13 +147,13 @@ const Dashboard = ()=>{
             sortable: true
         },
         {
-            name: "Nombre:",
+            name: "Nombre",
             selector:"userName",
-            cell: row => row.userName,
+            cell: row => row.userName.charAt(0).toUpperCase() + row.userName.slice(1),
             sortable: true
         },
         {
-            name: "email:",
+            name: "email",
             selector: "email",
             cell: row => row.email,
             sortable: true
@@ -116,7 +163,7 @@ const Dashboard = ()=>{
             selector: row => row.password
         }, */
         {
-            name: "Tipo:",
+            name: "Tipo",
             selector: "role",
             cell: row => editRole === row.id?
                 <select onChange={(e)=>handleRole(e,row.id)} value={row.role}>
@@ -135,7 +182,7 @@ const Dashboard = ()=>{
             
         },
         {
-            name: "Registro:",
+            name: "Registro",
             selector: "provider",
             cell: row => row.provider.charAt(0).toUpperCase() + row.provider.slice(1),
             sortable: true
@@ -162,54 +209,60 @@ const Dashboard = ()=>{
     
     const columnsWatch = [
     {
-        name: "Reloj:",
+        name: "Reloj",
         selector: "image",
         cell: row => (<img className="imgTable" src={row.image[0]}/>),
     },
     {
-        name: "Marca:",
+        name: "Marca",
         selector: "brandName",
         cell: row => row.brandName.charAt(0).toUpperCase() + row.brandName.slice(1),
         sortable: true
     },
     {
-        name: "Modelo:",
+        name: "Modelo",
         selector: "model",
         cell: row => row.model.charAt(0).toUpperCase() + row.model.slice(1),
         sortable: true
     },
     {
-        name: "Precio:",
+        name: "Precio",
         selector: "price",
         cell: row => `u$s${row.price}`,
         sortable: true
     },
     {
-        name: "Color:",
+        name: "Color",
         selector: "colorName",
         cell: row => row.colorName.charAt(0).toUpperCase() + row.colorName.slice(1),
         sortable: true
     },
     {
-        name: "Estilo:",
+        name: "Estilo",
         selector: "styleName",
         cell: row => row.styleName.charAt(0).toUpperCase() + row.styleName.slice(1),
         sortable: true
     },
     {
-        name: "Genero:",
+        name: "Genero",
         selector: "gender",
         cell: row => row.gender.charAt(0).toUpperCase() + row.gender.slice(1),
         sortable: true
     },
     {
-        name: "Malla:",
+        name: "Malla",
         selector: "strapName",
         cell: row => row.strapName.charAt(0).toUpperCase() + row.strapName.slice(1),
         sortable: true
     },
     {
-        name: "Acción:",
+        name: "Stock",
+        selector: "stock",
+        cell: row => `Cant.(${row.stock})`,
+        sortable: true
+    },
+    {
+        name: "Acción",
         selector: "del",
         cell: row => (
             <div className="divAction">
@@ -235,51 +288,6 @@ const Dashboard = ()=>{
     },
     
     ]
-
-    const dataExpan = ({data})=> {
-    console.log(data);
-    return (
-        <div className="dataExpan">
-            <span>Descripción: {data.description} </span><span>Funciones: {data.Functions.map(s=>`  •${s.name.charAt(0).toUpperCase() + s.name.slice(1)}  `)}</span>
-        </div>
-    )
-    };
-
-
-    const handleFilterWatch = (e)=>{
-    const {value} = e.target
-    const filtered = allClocks.filter(row=>{
-        const modelo = row.model.toLowerCase()
-        return modelo.includes(value.toLowerCase())        
-    })
-    setSearchClock(filtered)
-    }
-    
-    const custonStyled = {
-        rows: {
-            style:{
-                color: "black",
-                backgroundColor: "rgb(255,255,255,0.7)",
-                
-            }
-        },
-        headCells: {
-            style:{
-                color: "white",
-                backgroundColor: "rgb(0,0,0,0.8)",
-            }
-        },
-        /* table:{
-            style:{
-                backgroundColor: ""
-            }
-        }, */
-        
-    }
-   
-    
-    
-    
     
     return (
         <Container>
@@ -290,11 +298,26 @@ const Dashboard = ()=>{
                 setNewWat={setNewWat}
                 view={view}
                 newWat={newWat}
+                setNewUser={setNewUser}
+                newUser={newUser}
                 
             />
             
-            <div className="containerTable">                
-                {view === "buys" &&<Buys/>}
+            <div className="containerTable">   
+                {view === "home" && 
+                    <HomeAdmin
+                        allBuys={allBuys}
+                        allClocks={allClocks}
+                        allUsers={allUsers}
+                        setView={setView}
+                    />
+                }
+                {view === "buys" &&
+                    <Buys
+                        allBuys={allBuys}
+                        custonStyled={custonStyled}
+                    />
+                }
                 
                 {view === "users" && 
                     <div className="tables">
@@ -304,7 +327,7 @@ const Dashboard = ()=>{
                     </div>
                     <DataTable 
                         columns={columnsUser}
-                        data={searchUser}
+                        data={!searchUser.length ? allUsers : searchUser}
                         fixedHeader= {true}
                         fixedHeaderScrollHeight="420px"  
                         highlightOnHover
@@ -324,7 +347,7 @@ const Dashboard = ()=>{
                     </div>
                         <DataTable
                             columns={columnsWatch}
-                            data={searchClock}
+                            data={!searchClock.length ? allClocks : searchClock}
                             fixedHeader= {true}
                             fixedHeaderScrollHeight="420px"
                             pointerOnHover   
@@ -338,7 +361,7 @@ const Dashboard = ()=>{
                         />
                     </div>
                 }
-                
+                {newUser && <FormUser btnClose={()=>setNewUser(false)}/>}
                 {newWat && <Form btnClose={()=>setNewWat(false)}/>}
                 {updateW && wUpdate.id && <FormWatchUpdate btnClose={()=>setUpdateW(false)} wUpdate={wUpdate} setUpdateW={setUpdateW}/>}
             </div>

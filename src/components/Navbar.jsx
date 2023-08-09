@@ -20,6 +20,7 @@ import { BTNCarritoDeCompras } from "../utils/ComponentsStyle.jsx";
 export const Navbar = () => {
   const cart = useSelector((state) => state.Cart);
   const user = useSelector((state) => state.user);
+  const selectedCategories = useSelector((state) => state.selectedCategories);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -34,12 +35,15 @@ export const Navbar = () => {
 
   const handleLinkClick = (brand) => {
     const brandLowerCase = brand.toLowerCase();
+    console.log("estoy aca");
+
     if (brandLowerCase === "ver todo") {
       dispatch(getProducts());
       dispatch(clearFilters());
-      dispatch(updateSelectedCategories(""))
+      dispatch(updateSelectedCategories(""));
     } else {
       dispatch(getWatchesByBrand(brandLowerCase));
+      dispatch(updateSelectedCategories(` ${brandLowerCase}`));
     }
   };
 
@@ -185,19 +189,21 @@ const Container = styled.div`
     ul {
       list-style: none;
       position: relative;
-    }
-    li {
-      text-transform: uppercase;
-      font-weight: 300;
-    }
+      li {
+        text-transform: uppercase;
+        font-weight: 300;
+       }
+      }
     .nav {
-      margin: 0 auto;
-      width: 60%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-evenly;
+    margin: 0 auto;
+    width: 60%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly; 
     }
+  }
+
     .icons {
       width: 40%;
       display: flex;
