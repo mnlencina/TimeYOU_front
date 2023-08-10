@@ -30,7 +30,7 @@ import {
 } from "./actionTypes";
 
 import { searchClient } from "../settings_algolia/settingsAlgolia";
-import { BsDisplayport } from "react-icons/bs";
+//import { BsDisplayport } from "react-icons/bs";
 
 //fetch de productos
 
