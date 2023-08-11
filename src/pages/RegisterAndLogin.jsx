@@ -142,19 +142,7 @@ function RegisterAndLogin() {
     <ContainerRegister>
       <h1>registrarse</h1>
       <div className="register-container">
-        {/* <div className="container-btn">
-          <div className="content">
-            <p>Registrate con plataformas sociales</p>
-          </div>
-          <div className="btn-controllers">
-            <button>
-              <FaFacebookF />
-            </button>
-            <button onClick={handleOnClick}>
-              <BsGoogle />
-            </button>
-          </div>
-        </div> */}
+        
         <form
           action="POST"
           onSubmit={handleSubmitRegister}
@@ -168,6 +156,7 @@ function RegisterAndLogin() {
               value={registerValues.userName}
               onChange={handleChangeRegister}
               placeholder="ingrese su nombre de usuario..."
+              maxLength={20}
             />
 
             {registerSubmitted && errorRegister.n1 && (
@@ -189,6 +178,7 @@ function RegisterAndLogin() {
               name="email"
               value={registerValues.email}
               onChange={handleChangeRegister}
+              maxLength={30}
             />
             {registerSubmitted && errorRegister.e1 && (
               <ContainerError>
@@ -205,10 +195,11 @@ function RegisterAndLogin() {
             <AiOutlineLock />
             <input
               type="password"
-              placeholder="ingrese una contraseña"
+              placeholder="ingrese una contraseña..."
               name="password"
               value={registerValues.password}
               onChange={handleChangeRegister}
+              maxLength={15}
             />
           </div>
 
@@ -220,25 +211,19 @@ function RegisterAndLogin() {
   console.log(errorLogin.n1);
   const renderLogin = () => (
     <ContainerLogin>
-      <h1>Iniciar sesion</h1>
       <div className="login-container">
-        {/* <div className="login-btn">
-          <button>
-            <FaFacebookF />
-          </button>
-          <button>
-            <BsGoogle onClick={handleOnClick} />
-          </button>
-        </div> */}
+      <h1 className="iniciar">Iniciar sesion</h1>
+       
         <form action="GET" onSubmit={handleSubmitLogin} className="login">
           <div className="input-field">
             <AiOutlineMail />
             <input
-              placeholder="Ingrese su email.."
+              placeholder="Ingrese su email..."
               type="text"
               name="email"
               value={loginAcount.email}
               onChange={handleChangeLogin}
+              maxLength={30}
             />
             {loginSubmitted && errorLogin.e1 && (
               <ContainerErrorLogin>
@@ -259,13 +244,14 @@ function RegisterAndLogin() {
               name="password"
               value={loginAcount.password}
               onChange={handleChangeLogin}
+              maxLength={15}
             />
           </div>
-          <BTNLogin>Login</BTNLogin>
+          <BTNLogin>Ingresar</BTNLogin>
           <div className="login-btn">
-            <button>
+            {/* <button>
               <FaFacebookF />
-            </button>
+            </button> */}
             <button>
               <BsGoogle onClick={handleOnClick} />
             </button>
@@ -280,18 +266,18 @@ function RegisterAndLogin() {
       {renderRegister()}
       <div className={`panel-login${inModeLogin ? " active-login" : ""}`}>
         <div className="panel">
-          <h2>Ya tienes una cuenta</h2>
-          <h4>haz Click para iniciar secion</h4>
-          <button onClick={handleInMode}>ir a login</button>
+          <h2>¿Ya tienes una cuenta?</h2>
+          <h4>Haz Click para iniciar sesion</h4>
+          <button onClick={handleInMode}>iniciar</button>
         </div>
       </div>
       <div
         className={`panel-register${!inModeLogin ? " active-register" : ""}`}
       >
         <div className="panel">
-          <h2>No tienes una cuenta?</h2>
-          <h4>haz Click para registrarte</h4>
-          <button onClick={handleInMode}>register</button>
+          <h2>¿No tienes una cuenta?</h2>
+          <h4>Haz Click para registrarte</h4>
+          <button onClick={handleInMode}>registrate</button>
         </div>
       </div>
       <TransitionDiv inModeLogin={inModeLogin} />
@@ -509,10 +495,11 @@ const ContainerRegister = styled.div`
 const ContainerLogin = styled.div`
   width: 50%;
   height: 100%;
-  h1 {
-    width: 100%;
-    margin-left: 235px;
-    margin-top: 95px;
+  
+  .iniciar {
+    //width: 100%;
+    //display: flex;
+    margin-top: 10%;
     text-transform: uppercase;
     text-decoration: underline;
   }
@@ -520,6 +507,9 @@ const ContainerLogin = styled.div`
     width: 100%;
     height: 100%;
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5%;
     .login-btn {
       bottom: 60px;
       right: 240px;
@@ -546,17 +536,15 @@ const ContainerLogin = styled.div`
       }
     }
     .login {
-      position: absolute;
-      top: 150px;
-      right: 150px;
       width: 350px;
-      height: 350px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-evenly;
-      border-radius: 30px;
-      box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+    height: 350px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    border-radius: 30px;
+    box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+    
       .input-field {
         width: 90%;
         background-color: #f0f0f0;
