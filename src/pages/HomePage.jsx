@@ -1,19 +1,27 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import {
   CardContext,
   Drawer,
-  BannerSlider,
   Pagination,
-  CardSlider,
 } from "../components/index.js";
 import { useSelector } from "react-redux";
 import { Loader } from "../components/Loader/Loader.jsx";
 import { ContainerLoader } from "../utils/ComponentsStyle.jsx";
+import { useNavigate } from "react-router-dom";
+
+
 
 export default function HomePage() {
+  
+  const navigate = useNavigate();
+  
+  const user = useSelector((state)=> state.user)
   const { Clocks, allClocks, searchActive } = useSelector((state) => state);
   const whatches = searchActive ? Clocks : allClocks;
+  
+  const watchDel1 = whatches.filter(watch => watch.stock > 0);
+  const watchDel = watchDel1.filter(watch => watch.del === false);
 
   const loading = useSelector((state) => state.isLoading);
 
@@ -24,15 +32,15 @@ export default function HomePage() {
   //funciones de paginacion
   const [page, setPage] = useState(1);
   const itemPerPage = 12;
-  const totalPages = Math.ceil(whatches && (whatches.length / itemPerPage)) 
+  const totalPages = Math.ceil(watchDel && (watchDel.length / itemPerPage)) 
 
   const paginacion = () => {
     const startIndex = (page - 1) * itemPerPage;
     const endIndex = startIndex + itemPerPage;
-    if (whatches && whatches.length) return whatches.slice(startIndex, endIndex);
+    if (watchDel && watchDel.length) return watchDel.slice(startIndex, endIndex);
   };
 
-  const PaginacionRelojes = paginacion();
+  const PaginacionRelojes = paginacion()
 
   const onNextPage = () => {
     if (page < totalPages) {
@@ -65,6 +73,10 @@ export default function HomePage() {
       <Loader />
     </ContainerLoader>
   );
+  
+  if (user.del) {
+    navigate("/home/loginout")   
+  }
 
   return (
     <>
@@ -87,6 +99,8 @@ export default function HomePage() {
           />
         </>
       )}
+      
+      
     </>
   );
 }
@@ -99,8 +113,8 @@ const ContainerMostrador = styled.div`
   align-items: flex-start;
   justify-content: center;
   .sidebar {
-    width: ${(props) => (props.show ? "400px" : "0")};
-    height: ${props => props.show ? "1600px":"1100px"};
+    width: ${(props) => (props.show ? "300px" : "0")};
+    height: ${props => props.show ? "1800px":"1100px"};
     background-color: #111;
     transition: 0.5s ease-in-out;
     position: relative;
@@ -108,7 +122,7 @@ const ContainerMostrador = styled.div`
     display: flex;
     .btn-filter {
       position: absolute;
-      left: ${(props) => (props.show ? "400px" : "0px")};
+      left: ${(props) => (props.show ? "300px" : "0px")};
       top: 30px;
       transition: all 0.5s ease-in-out;
       button {
@@ -130,7 +144,7 @@ const ContainerMostrador = styled.div`
     }
   }
   .main-card {
-    width:/* 100%; */ ${(props) => (props.show ? "calc(100% - 400px)" : "100%")};
+    width:${(props) => (props.show ? "calc(100% - 300px)" : "100%")};
     min-height: 500px;
     height: 100%;
     transition: all 0.5s ease-in-out;

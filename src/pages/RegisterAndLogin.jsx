@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 /* iconos */
 import { FaFacebookF } from "react-icons/fa";
 import { BsGoogle } from "react-icons/bs";
+import { PiEyeBold, PiEyeClosedBold } from "react-icons/pi";
 import { AiOutlineUser, AiOutlineMail, AiOutlineLock } from "react-icons/ai";
 /* styled  editing */
 import { BTNLogin } from "../utils/ComponentsStyle";
@@ -16,6 +17,7 @@ import {
   validateInputLogin,
   validateInputRegister,
 } from "../utils/functiosAux";
+import Swal from 'sweetalert2';
 
 function RegisterAndLogin() {
   const USER = useSelector((state) => state.user);
@@ -23,6 +25,7 @@ function RegisterAndLogin() {
   const dispatch = useDispatch();
   /* Estados locales */
   const [inModeLogin, setInModeLogin] = useState(false);
+  const [toggle, setToggle] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [registerSubmitted, setRegisterSubmitted] = useState(false);
   const [loginSubmitted, setLoginSubmitted] = useState(false);
@@ -42,6 +45,7 @@ function RegisterAndLogin() {
   /* Controladores */
   const handleInMode = () => {
     setInModeLogin(!inModeLogin);
+    setToggle(false);
   };
 
   const handleChangeRegister = (e) => {
@@ -69,7 +73,12 @@ function RegisterAndLogin() {
     setRegisterSubmitted(true);
     if (Object.keys(errorRegister).length > 0) {
       /* Agregar alerta! */
-      alert("no se registraron datos");
+      Swal.fire({
+        icon: 'error',
+        title: 'No se registraron datos',
+        showConfirmButton: false,
+        timer: 1500
+      })
       return;
     } else {
       dispatch(createUser(registerValues));
@@ -96,7 +105,12 @@ function RegisterAndLogin() {
     setLoginSubmitted(true);
     if (Object.keys(errorLogin).length > 0) {
       /* agregar alertas!!!! */
-      alert("Usuario o contraseña incorrectos");
+      Swal.fire({
+        icon: 'error',
+        title: 'Usuario o contraseña incorrectos',
+        showConfirmButton: false,
+        timer: 1500
+      })
       return;
     }
     dispatch(loginUser(loginAcount));
@@ -108,6 +122,9 @@ function RegisterAndLogin() {
     } else {
       navigate("/auth");
     }
+  };
+  const handleToggle = () => {
+    setToggle(!toggle);
   };
 
   useEffect(() => {
@@ -142,7 +159,6 @@ function RegisterAndLogin() {
     <ContainerRegister>
       <h1>registrarse</h1>
       <div className="register-container">
-        
         <form
           action="POST"
           onSubmit={handleSubmitRegister}
@@ -194,13 +210,16 @@ function RegisterAndLogin() {
           <div className="input-field">
             <AiOutlineLock />
             <input
-              type="password"
+              type={toggle ? "text" : "password"}
               placeholder="ingrese una contraseña..."
               name="password"
               value={registerValues.password}
               onChange={handleChangeRegister}
               maxLength={15}
             />
+            <div className="toggle" onClick={handleToggle}>
+              {toggle ? <PiEyeBold size={25} /> : <PiEyeClosedBold size={25} />}
+            </div>
           </div>
 
           <BTNLogin alter="false"> enviar</BTNLogin>
@@ -212,8 +231,8 @@ function RegisterAndLogin() {
   const renderLogin = () => (
     <ContainerLogin>
       <div className="login-container">
-      <h1 className="iniciar">Iniciar sesion</h1>
-       
+        <h1 className="iniciar">Iniciar sesion</h1>
+
         <form action="GET" onSubmit={handleSubmitLogin} className="login">
           <div className="input-field">
             <AiOutlineMail />
@@ -240,12 +259,15 @@ function RegisterAndLogin() {
             <AiOutlineLock />
             <input
               placeholder="Ingrese su contraseña..."
-              type="password"
+              type={toggle ? "text" : "password"}
               name="password"
               value={loginAcount.password}
               onChange={handleChangeLogin}
               maxLength={15}
             />
+            <div className="inicioSesion" onClick={handleToggle}>
+              {toggle ? <PiEyeBold size={25} /> : <PiEyeClosedBold size={25} />}
+            </div>
           </div>
           <BTNLogin>Ingresar</BTNLogin>
           <div className="login-btn">
@@ -480,6 +502,11 @@ const ContainerRegister = styled.div`
           font-size: 1rem;
           color: #333;
         }
+        .toggle {
+          position: absolute;
+          margin-left: 250px;
+        }
+
         svg {
           text-align: center;
           line-height: 55px;
@@ -495,7 +522,7 @@ const ContainerRegister = styled.div`
 const ContainerLogin = styled.div`
   width: 50%;
   height: 100%;
-  
+
   .iniciar {
     //width: 100%;
     //display: flex;
@@ -537,14 +564,14 @@ const ContainerLogin = styled.div`
     }
     .login {
       width: 350px;
-    height: 350px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-evenly;
-    border-radius: 30px;
-    box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
-    
+      height: 350px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-evenly;
+      border-radius: 30px;
+      box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+
       .input-field {
         width: 90%;
         background-color: #f0f0f0;
@@ -568,6 +595,10 @@ const ContainerLogin = styled.div`
           font-weight: 600;
           font-size: 1rem;
           color: #333;
+        }
+        .inicioSesion {
+          position: absolute;
+          margin-left: 250px;
         }
         svg {
           text-align: center;
