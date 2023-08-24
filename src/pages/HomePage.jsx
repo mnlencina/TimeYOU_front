@@ -128,19 +128,27 @@ const ContainerMostrador = styled.div`
     
     .btn-filter {
       position: absolute;
-      left: 0px;
-      top: 0px;
+      /* left: 0;
+      top: 0; */
+      left: -58px;
+      top: 40px;
       transition: all 0.5s ease-in-out;
       
       transition: 3s;
-      button {        
-        width: 35px;
+      button {
+        
+
+        /* width: 35px;
         height: 150px;
+        writing-mode: vertical-rl; */
+        
+        width: 150px;
+        height: 35px;
+        rotate: -90deg;
         background-color: #000000;
         border: none;
-        border-radius: 0 10px 10px 0;
+        border-radius: 0px 0px 10px 10px;
         color: #fff;
-        writing-mode: vertical-lr;
         text-transform: uppercase;
         letter-spacing: 7px;
         transition: 0.3s;
