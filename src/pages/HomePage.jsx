@@ -133,14 +133,14 @@ const ContainerMostrador = styled.div`
       transition: all 0.5s ease-in-out;
       
       transition: 3s;
-      button {
-        
+      button {        
         width: 35px;
         height: 150px;
         background-color: #000000;
         border: none;
         border-radius: 0 10px 10px 0;
         color: #fff;
+        
         writing-mode: vertical-lr;
         text-transform: uppercase;
         letter-spacing: 7px;
