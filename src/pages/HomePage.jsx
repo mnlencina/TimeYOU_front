@@ -140,7 +140,6 @@ const ContainerMostrador = styled.div`
         border: none;
         border-radius: 0 10px 10px 0;
         color: #fff;
-        
         writing-mode: vertical-lr;
         text-transform: uppercase;
         letter-spacing: 7px;
